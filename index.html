@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cumpleaños</title>
+    <link rel="stylesheet" href="estilos.css" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+</head>
+<body> 
+
+<!-- Overlay para fullscreen -->
+<section id="overlay-fullscreen">
+    <img src="img/inicioBoton.svg" alt="ubicacion" class="tarjeta mobile" />
+    <button class="botonPantalla" id="btn-fullscreen">Abrir Tarjeta</button>
+ </section> 
+
+<!-- SECCION INICIO -->
+<section id="inicio" class="inicio">
+    <img src="img/inicio_android.svg" alt="ubicacion" class="tarjeta mobile" />
+    <button class="btn-mapaMob"> ir a donde</button>
+  </section> 
+
+<!-- SECCION INFO
+<section id="info" class="info" style="display:none;">
+    <img src="img/botonesInfo_android.svg" alt="Información" class="tarjeta mobile" />
+    <button class="btn-cuando">CUANDO</button>
+    <button class="btn-donde">DONDE</button>
+    <button class="btn-confirmar">CONFIRMAR</button>
+</section> -->
+
+<!-- SECCION CUANDO -->
+<section id="cuando" class="cuando" style="display:none;">
+    <img src="img/pantallaCuando_android.svg" alt="Pantalla Cuando" class="tarjeta mobile" />
+    <button class="btn-ir-donde">IR A DONDE</button>
+</section>
+
+<!-- SECCION DONDE -->
+<section id="donde" class="donde" style="display:none;">
+    <img src="img/pantallaDonde_android.svg" alt="Pantalla Donde" class="tarjeta mobile" />
+    <button class="btn-ir-confirmar">IR A CONFIRMAR</button>
+</section>
+
+<!-- SECCION CONFIRMAR -->
+<section id="confirmar" class="confirmar" style="display:none;">
+    <img src="img/pantallaConfirmar_android.svg" alt="Pantalla Confirmar" class="tarjeta mobile" />
+    <button class="btn-volver-info">VOLVER A INFO</button>
+    <!-- <button class="btn-link-externo">IR A LINK</button> -->
+</section>
+
+<script>
+ const btnFullscreen = document.getElementById('btn-fullscreen');
+  const overlay = document.getElementById('overlay-fullscreen');
+
+  btnFullscreen.addEventListener('click', () => {
+    const el = document.documentElement;
+
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+
+    // Eliminar overlay
+    overlay.remove();
+    document.getElementById('inicio').style.display = 'block';
+    document.body.style.overflow = "hidden";
+  });
+
+  const btnContinuar = document.querySelector('.btn-mapaMob');
+  const pantallaInicio = document.querySelector('#inicio');
+  const pantallaCuando = document.querySelector('#cuando');
+  const pantallaDonde = document.querySelector('#donde');
+  const pantallaConfirmar = document.querySelector('#confirmar');
+
+  // Inicio → Cuando
+  if (btnContinuar) {
+    btnContinuar.addEventListener('click', () => {
+      pantallaInicio.style.display = 'none';
+      pantallaCuando.style.display = 'block';
+    });
+  }
+
+  // Cuando → Donde
+  const btnIrDonde = document.querySelector('.btn-ir-donde');
+  if (btnIrDonde) {
+    btnIrDonde.addEventListener('click', () => {
+      pantallaCuando.style.display = 'none';
+      pantallaDonde.style.display = 'block';
+    });
+  }
+
+  // Donde → Confirmar
+  const btnIrConfirmar = document.querySelector('.btn-ir-confirmar');
+  if (btnIrConfirmar) {
+    btnIrConfirmar.addEventListener('click', () => {
+      pantallaDonde.style.display = 'none';
+      pantallaConfirmar.style.display = 'block';
+    });
+  }
+
+  // Confirmar → Inicio
+  const btnVolver = document.querySelector('.btn-volver-info');
+  if (btnVolver) {
+    btnVolver.addEventListener('click', () => {
+      pantallaConfirmar.style.display = 'none';
+      pantallaInicio.style.display = 'block';
+    });
+  }
+
+  /* // Botón WhatsApp (opcional)
+  const btnLink = document.querySelector('.btn-link-externo');
+  if (btnLink) {
+    btnLink.addEventListener('click', () => {
+      const numero = "5492281310784";
+      const mensaje = "Hola! Confirmo que voy a asistir a la misión 🚀";
+      const urlWhatsApp = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+      window.open(urlWhatsApp, '_blank');
+    });
+  } */
+
+  // Detectar si es Safari iOS
+  function esSafariIOS() {
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) &&
+           /iP(ad|hone|od)/.test(navigator.userAgent);
+  }
+
+  // Cambiar imágenes según navegador
+  function cambiarImagenesSegunNavegador() {
+    const sufijo = esSafariIOS() ? '_ios.svg' : '_android.svg';
+
+    const inicio = document.querySelector('#inicio .tarjeta');
+    if (inicio) inicio.src = 'img/inicio' + sufijo;
+
+    const cuando = document.querySelector('#cuando .tarjeta');
+    if (cuando) cuando.src = 'img/pantallaCuando' + sufijo;
+
+    const donde = document.querySelector('#donde .tarjeta');
+    if (donde) donde.src = 'img/pantallaDonde' + sufijo;
+
+    const confirmar = document.querySelector('#confirmar .tarjeta');
+    if (confirmar) confirmar.src = 'img/pantallaConfirmar' + sufijo;
+  }
+
+  // Ajustar altura en Safari iOS
+  function ajustarAlturaIOS() {
+    if (esSafariIOS()) {
+      const altoReal = window.innerHeight + 'px';
+      document.querySelectorAll('section').forEach(sec => {
+        sec.style.height = altoReal;
+      });
+      document.querySelectorAll('.tarjeta').forEach(img => {
+        img.style.height = altoReal;
+        img.style.width = '100%';
+        img.style.objectFit = 'contain';
+      });
+    }
+  }
+
+  // Ejecutar
+  window.addEventListener('load', () => {
+    cambiarImagenesSegunNavegador();
+    ajustarAlturaIOS();
+  });
+  window.addEventListener('resize', ajustarAlturaIOS);
+</script>
+</body>
+</html>
