@@ -12,7 +12,7 @@
 
 <!-- Overlay para fullscreen -->
 <section id="overlay-fullscreen">
-    <img src="img/inicioBoton.svg" alt="ubicacion" class="tarjeta mobile" />
+    <img src="img/inicioBoton_android.svg" alt="ubicacion" class="tarjeta mobile" />
     <button class="botonPantalla" id="btn-fullscreen">Abrir Tarjeta</button>
  </section> 
 
@@ -127,6 +127,10 @@
   // Cambiar imágenes según navegador
   function cambiarImagenesSegunNavegador() {
     const sufijo = esSafariIOS() ? '_ios.svg' : '_android.svg';
+
+    // Imagen del overlay fullscreen
+    const overlayImg = document.querySelector('#overlay-fullscreen .tarjeta');
+    if (overlayImg) overlayImg.src = 'img/inicioBoton' + sufijo;
 
     const inicio = document.querySelector('#inicio .tarjeta');
     if (inicio) inicio.src = 'img/inicio' + sufijo;
